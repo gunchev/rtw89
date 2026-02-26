@@ -115,7 +115,11 @@ rtw89_acpi_evaluate_method(struct rtw89_dev *rtwdev, const char *method)
 		goto out;
 	}
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	data = kzalloc_flex(*data, buf, len, GFP_KERNEL);
+#else
 	data = kzalloc(struct_size(data, buf, len), GFP_KERNEL);
+#endif
 	if (!data)
 		goto out;
 

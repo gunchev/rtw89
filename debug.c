@@ -3570,7 +3570,11 @@ rtw89_debug_priv_early_h2c_set(struct rtw89_dev *rtwdev,
 		goto out;
 	}
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	early_h2c = kmalloc_obj(*early_h2c, GFP_KERNEL);
+#else
 	early_h2c = kmalloc(sizeof(*early_h2c), GFP_KERNEL);
+#endif
 	if (!early_h2c) {
 		kfree(h2c);
 		return -EFAULT;

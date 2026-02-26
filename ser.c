@@ -210,7 +210,11 @@ static int ser_send_msg(struct rtw89_ser *ser, u8 event)
 	if (test_bit(RTW89_SER_DRV_STOP_RUN, ser->flags))
 		return -EIO;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	msg = kmalloc_obj(*msg, GFP_ATOMIC);
+#else
 	msg = kmalloc(sizeof(*msg), GFP_ATOMIC);
+#endif
 	if (!msg)
 		return -ENOMEM;
 

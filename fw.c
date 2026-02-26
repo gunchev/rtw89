@@ -1099,12 +1099,20 @@ int rtw89_build_phy_tbl_from_elm(struct rtw89_dev *rtwdev,
 	else if (*pp)
 		return 1; /* ignore if an element is existing */
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	tbl = kzalloc_obj(*tbl, GFP_KERNEL);
+#else
 	tbl = kzalloc(sizeof(*tbl), GFP_KERNEL);
+#endif
 	if (!tbl)
 		return -ENOMEM;
 
 	n_regs = le32_to_cpu(elm->size) / sizeof(tbl->regs[0]);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	regs = kzalloc_objs(*regs, n_regs, GFP_KERNEL);
+#else
 	regs = kcalloc(n_regs, sizeof(*regs), GFP_KERNEL);
+#endif
 	if (!regs)
 		goto out;
 
@@ -1141,7 +1149,11 @@ int rtw89_fw_recognize_txpwr_from_elm(struct rtw89_dev *rtwdev,
 	struct rtw89_txpwr_conf *conf;
 
 	if (!rtwdev->rfe_data) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+		rtwdev->rfe_data = kzalloc_obj(*rtwdev->rfe_data, GFP_KERNEL);
+#else
 		rtwdev->rfe_data = kzalloc(sizeof(*rtwdev->rfe_data), GFP_KERNEL);
+#endif
 		if (!rtwdev->rfe_data)
 			return -ENOMEM;
 	}
@@ -1201,7 +1213,11 @@ int rtw89_build_txpwr_trk_tbl_from_elm(struct rtw89_dev *rtwdev,
 		return -ENOENT;
 	}
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	elm_info->txpwr_trk = kzalloc_obj(*elm_info->txpwr_trk, GFP_KERNEL);
+#else
 	elm_info->txpwr_trk = kzalloc(sizeof(*elm_info->txpwr_trk), GFP_KERNEL);
+#endif
 	if (!elm_info->txpwr_trk)
 		return -ENOMEM;
 
@@ -1250,7 +1266,11 @@ int rtw89_build_rfk_log_fmt_from_elm(struct rtw89_dev *rtwdev,
 	if (elm_info->rfk_log_fmt)
 		goto allocated;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	elm_info->rfk_log_fmt = kzalloc_obj(*elm_info->rfk_log_fmt, GFP_KERNEL);
+#else
 	elm_info->rfk_log_fmt = kzalloc(sizeof(*elm_info->rfk_log_fmt), GFP_KERNEL);
+#endif
 	if (!elm_info->rfk_log_fmt)
 		return 1; /* this is an optional element, so just ignore this */
 
@@ -2944,7 +2964,11 @@ static int rtw89_fw_h2c_add_general_pkt(struct rtw89_dev *rtwdev,
 	struct sk_buff *skb;
 	int ret;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	info = kzalloc_obj(*info, GFP_KERNEL);
+#else
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+#endif
 	if (!info)
 		return -ENOMEM;
 
@@ -8151,7 +8175,11 @@ static int rtw89_append_probe_req_ie(struct rtw89_dev *rtwdev,
 		skb_put_data(new, ies->ies[band], ies->len[band]);
 		skb_put_data(new, ies->common_ies, ies->common_ie_len);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+		info = kzalloc_obj(*info, GFP_KERNEL);
+#else
 		info = kzalloc(sizeof(*info), GFP_KERNEL);
+#endif
 		if (!info) {
 			ret = -ENOMEM;
 			kfree_skb(new);
@@ -8247,7 +8275,11 @@ static int rtw89_update_6ghz_rnr_chan_ax(struct rtw89_dev *rtwdev,
 		hdr = (struct ieee80211_hdr *)skb->data;
 		ether_addr_copy(hdr->addr3, params->bssid);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+		info = kzalloc_obj(*info, GFP_KERNEL);
+#else
 		info = kzalloc(sizeof(*info), GFP_KERNEL);
+#endif
 		if (!info) {
 			ret = -ENOMEM;
 			kfree_skb(skb);
@@ -8540,7 +8572,11 @@ int rtw89_pno_scan_add_chan_list_ax(struct rtw89_dev *rtwdev,
 	     idx < nd_config->n_channels && list_len < RTW89_SCAN_LIST_LIMIT_AX;
 	     idx++, list_len++) {
 		channel = nd_config->channels[idx];
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+		ch_info = kzalloc_obj(*ch_info, GFP_KERNEL);
+#else
 		ch_info = kzalloc(sizeof(*ch_info), GFP_KERNEL);
+#endif
 		if (!ch_info) {
 			ret = -ENOMEM;
 			goto out;
@@ -8580,7 +8616,11 @@ static int rtw89_hw_scan_add_op_types_ax(struct rtw89_dev *rtwdev,
 {
 	struct rtw89_mac_chinfo_ax *tmp;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	tmp = kzalloc_obj(*tmp, GFP_KERNEL);
+#else
 	tmp = kzalloc(sizeof(*tmp), GFP_KERNEL);
+#endif
 	if (!tmp)
 		return -ENOMEM;
 
@@ -8626,7 +8666,11 @@ int rtw89_hw_scan_prep_chan_list_ax(struct rtw89_dev *rtwdev,
 
 	for (idx = 0; idx < req->n_channels; idx++) {
 		channel = req->channels[idx];
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+		ch_info = kzalloc_obj(*ch_info, GFP_KERNEL);
+#else
 		ch_info = kzalloc(sizeof(*ch_info), GFP_KERNEL);
+#endif
 		if (!ch_info) {
 			ret = -ENOMEM;
 			goto out;
@@ -8758,7 +8802,11 @@ int rtw89_pno_scan_add_chan_list_be(struct rtw89_dev *rtwdev,
 	     idx < nd_config->n_channels && list_len < RTW89_SCAN_LIST_LIMIT_BE;
 	     idx++, list_len++) {
 		channel = nd_config->channels[idx];
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+		ch_info = kzalloc_obj(*ch_info, GFP_KERNEL);
+#else
 		ch_info = kzalloc(sizeof(*ch_info), GFP_KERNEL);
+#endif
 		if (!ch_info) {
 			ret = -ENOMEM;
 			goto out;
@@ -8820,7 +8868,11 @@ int rtw89_hw_scan_prep_chan_list_be(struct rtw89_dev *rtwdev,
 		    !cfg80211_channel_is_psc(channel) && chan_by_rnr)
 			continue;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+		ch_info = kzalloc_obj(*ch_info, GFP_KERNEL);
+#else
 		ch_info = kzalloc(sizeof(*ch_info), GFP_KERNEL);
+#endif
 		if (!ch_info) {
 			ret = -ENOMEM;
 			goto out;

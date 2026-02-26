@@ -299,7 +299,11 @@ static void rtw89_usb_ops_tx_kick_off(struct rtw89_dev *rtwdev, u8 txch)
 		if (!skb)
 			break;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+		txcb = kmalloc_obj(*txcb, GFP_ATOMIC);
+#else
 		txcb = kmalloc(sizeof(*txcb), GFP_ATOMIC);
+#endif
 		if (!txcb) {
 			rtw89_usb_tx_free_skb(rtwdev, txch, skb);
 			continue;
@@ -976,8 +980,13 @@ static int rtw89_usb_intf_init(struct rtw89_dev *rtwdev,
 	if (ret)
 		return ret;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	rtwusb->vendor_req_buf = kmalloc_obj(*rtwusb->vendor_req_buf,
+					     GFP_KERNEL);
+#else
 	rtwusb->vendor_req_buf = kmalloc(sizeof(*rtwusb->vendor_req_buf),
 					 GFP_KERNEL);
+#endif
 	if (!rtwusb->vendor_req_buf)
 		return -ENOMEM;
 

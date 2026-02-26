@@ -4228,7 +4228,11 @@ int rtw89_core_send_nullfunc(struct rtw89_dev *rtwdev, struct rtw89_vif_link *rt
 	if (vif->type != NL80211_IFTYPE_STATION || !vif->cfg.assoc)
 		return 0;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	wait = kzalloc_obj(*wait, GFP_KERNEL);
+#else
 	wait = kzalloc(sizeof(*wait), GFP_KERNEL);
+#endif
 	if (!wait)
 		return -ENOMEM;
 
@@ -5678,7 +5682,11 @@ rtw89_wait_for_cond_prep(struct rtw89_wait_info *wait, unsigned int cond)
 	if (cur != RTW89_WAIT_COND_IDLE)
 		return ERR_PTR(-EPERM);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	prep = kzalloc_obj(*prep, GFP_KERNEL);
+#else
 	prep = kzalloc(sizeof(*prep), GFP_KERNEL);
+#endif
 	if (!prep)
 		return ERR_PTR(-ENOMEM);
 

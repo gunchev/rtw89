@@ -1499,7 +1499,11 @@ static int rtw89_pno_scan_update_probe_req(struct rtw89_dev *rtwdev,
 		skb_put_data(skb, basic_rate_ie, sizeof(basic_rate_ie));
 		skb_put_data(skb, nd_config->ie, nd_config->ie_len);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+		info = kzalloc_obj(*info, GFP_KERNEL);
+#else
 		info = kzalloc(sizeof(*info), GFP_KERNEL);
+#endif
 		if (!info) {
 			kfree_skb(skb);
 			rtw89_fw_release_pno_pkt_list(rtwdev, rtwvif_link);

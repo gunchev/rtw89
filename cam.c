@@ -420,7 +420,12 @@ static int rtw89_cam_sec_key_install(struct rtw89_dev *rtwdev,
 		return ret;
 	}
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
+	sec_cam = kzalloc_obj(*sec_cam, GFP_KERNEL);
+#else
 	sec_cam = kzalloc(sizeof(*sec_cam), GFP_KERNEL);
+#endif
+	
 	if (!sec_cam) {
 		ret = -ENOMEM;
 		goto err_release_cam;
