@@ -70,10 +70,12 @@ endif
 obj-m += rtw89_8852bu_git.o
 rtw89_8852bu_git-objs := rtw8852bu.o
 
+ifneq ($(CONFIG_PCI),)
 obj-m += rtw89_8852bt_git.o
 rtw89_8852bt_git-objs := rtw8852bt.o \
 			 rtw8852bt_rfk.o \
 			 rtw8852bt_rfk_table.o
+endif
 
 ifneq ($(CONFIG_PCI),)
 obj-m += rtw89_8852bte_git.o
