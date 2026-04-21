@@ -1,29 +1,42 @@
 # RTW89 Fedora DKMS package
 
-This was created with the assistance of Claude Oppus 4.6.
+This was created with the assistance of Claude Opus 4.6.
 
 ## Summary of what was created
 
-- [rtw89-dkms.spec](fedora/rtw89-dkms.spec).
+- [rtw89-dkms.spec](rtw89-dkms.spec).
 
 ## What the package installs:
 
-|               Path               |                 Content                 |
-|----------------------------------|-----------------------------------------|
-| /usr/src/rtw89-7.1/              | 110 source files + Makefile + dkms.conf |
-| /usr/lib/firmware/rtw89/*.bin    | 6 firmware binaries                     |
-| /etc/modprobe.d/rtw89.conf       | blacklists + driver options             |
-| /etc/modprobe.d/usb_storage.conf | USB quirks                              |
+| Path                       | Content                                 |
+|----------------------------|-----------------------------------------|
+| /usr/src/rtw89-7.1/        | 110 source files + Makefile + dkms.conf |
+| /etc/modprobe.d/rtw89.conf | blacklists + driver options             |
 
 ## Install
 
-To rebuild the tarball after new commits (bump Release: in the spec too):
+First install the dependencies to build the rpm package:
+
+```bash
+sudo dnf install rpmdevtools make git-core kernel-devel-matched
 ```
-git -C .. archive --format=tar.gz --prefix=rtw89-7.1/ HEAD > ~/rpmbuild/SOURCES/rtw89-7.1.tar.gz
-rpmbuild -ba rtw89-dkms.spec
+
+Then (re)build the package:
+
+```bash
+rm -fv ~/rpmbuild/RPMS/noarch/rtw89-dkms-*.noarch.rpm ~/rpmbuild/SRPMS/rtw89-dkms-*.src.rpm
+make
 sudo dnf install ~/rpmbuild/RPMS/noarch/rtw89-dkms-*.noarch.rpm
 ```
+
 Verify it worked:
+
+```bash
+dkms status   # verify: rtw89/7.1, $(uname -r), $(uname -m): installed
 ```
-dkms status   # verify: rtw89/7.1, <kernel>: installed
+
+Check if the git commit got embedded properly:
+
+```bash
+xzcat /usr/lib/modules/$(uname -r)/extra/rtw89_core_git.ko.xz | grep -a "git commit"
 ```
