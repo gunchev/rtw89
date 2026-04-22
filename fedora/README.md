@@ -10,7 +10,7 @@ This was created with the assistance of Claude Opus 4.6.
 
 | Path                       | Content                                 |
 |----------------------------|-----------------------------------------|
-| /usr/src/rtw89-7.1/        | 110 source files + Makefile + dkms.conf |
+| /usr/src/rtw89-7.1/        | 102 source files + Makefile + dkms.conf |
 | /etc/modprobe.d/rtw89.conf | blacklists + driver options             |
 
 ## Install
